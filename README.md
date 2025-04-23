@@ -48,6 +48,19 @@ Após a instalação, o nó da Evolution API estará disponível no n8n para uti
 
 Para acessar o n8n, acesse `http://localhost:5678` ou o domínio configurado no arquivo `.env`.
 
+## Correções Aplicadas
+
+### Correção do endpoint sendText
+
+Foi aplicada uma correção no endpoint de envio de mensagens da Evolution API. O caminho original `/manager/message/sendText/INSTANCE` foi alterado para `/message/sendText/INSTANCE`, conforme a estrutura atual da API.
+
+Para aplicar manualmente esta correção após uma atualização, execute:
+
+```bash
+docker exec -it n8n-setup_n8n_1 sh -c "sed -i 's|/manager/message/sendText/|/message/sendText/|g' /home/node/.n8n/custom/node_modules/n8n-nodes-evolution-api/dist/nodes/EvolutionApi/execute/messages/sendText.js"
+docker restart n8n-setup_n8n_1
+```
+
 ## Solução de problemas
 
 Se o nó da Evolution API não aparecer na interface do n8n:
