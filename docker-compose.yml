@@ -7,7 +7,7 @@ volumes:
 
 x-shared: &shared
   restart: always
-  build: .
+  image: n8nio/n8n:latest
   environment:
     NODE_ENV: "production"
     N8N_HOST: "${HOST}"
@@ -28,6 +28,8 @@ x-shared: &shared
     QUEUE_BULL_REDIS_HOST: "redis"
     QUEUE_BULL_REDIS_PASSWORD: "${REDIS_PASSWORD}"
     QUEUE_HEALTH_CHECK_ACTIVE: "true"
+    N8N_COMMUNITY_NODES_ENABLED: "true"
+    N8N_CUSTOM_API_CALL_ALLOWED_HOSTS: "localhost,evolution_api"
   depends_on:
     redis:
       condition: service_healthy
@@ -84,10 +86,19 @@ services:
     volumes:
       - "n8n_storage:/home/node/.n8n"
     ports:
-      - "80:5678"
+      - "5678:5678"
+    networks:
+      - default
+      - evolution-network
 
   n8n-worker:
     <<: *shared
     command: "/bin/sh -c 'sleep 5; n8n worker'"
     depends_on:
       - "n8n"
+
+networks:
+  default:
+    driver: bridge
+  evolution-network:
+    external: true 
